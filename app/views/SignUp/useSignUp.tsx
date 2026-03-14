@@ -10,7 +10,7 @@ type SignUpPayload = {
 const useSignUp = () => {
   const API_BASE_URL = process.env.NEXT_PUBLIC_MEMORATOR_BE_API_URL ?? "";
   const SIGN_UP_URL = API_BASE_URL
-    ? `${API_BASE_URL.replace(/\/+$/, "")}/users/register`
+    ? `${API_BASE_URL.replace(/\/+$/, "")}/user/register`
     : "/api/auth/sign-up";
 
   const router = useRouter();

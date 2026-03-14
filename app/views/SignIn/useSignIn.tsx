@@ -10,7 +10,7 @@ const useSignIn = () => {
   const API_BASE_URL = process.env.NEXT_PUBLIC_MEMORATOR_BE_API_URL ?? "";
 
   const SIGN_IN_URL = API_BASE_URL
-    ? `${API_BASE_URL.replace(/\/+$/, "")}/users/login`
+    ? `${API_BASE_URL.replace(/\/+$/, "")}/user/login`
     : "/api/auth/sign-in";
 
   const router = useRouter();

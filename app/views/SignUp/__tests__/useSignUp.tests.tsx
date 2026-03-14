@@ -140,8 +140,8 @@ describe("handleSubmit — success", () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
     const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
     // Without NEXT_PUBLIC_MEMORATOR_BE_API_URL set, the hook falls back to the
-    // relative proxy route. In CI/integration the full URL would end in /users/register.
-    expect(url).toMatch(/\/users\/register|\/api\/auth\/sign-up/);
+    // relative proxy route. In CI/integration the full URL would end in /user/register.
+    expect(url).toMatch(/\/user\/register|\/api\/auth\/sign-up/);
     expect(options.method).toBe("POST");
     expect(JSON.parse(options.body as string)).toEqual({
       login: "alice",
