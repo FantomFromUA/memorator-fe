@@ -1,0 +1,8 @@
+const BASE = (process.env.NEXT_PUBLIC_MEMORATOR_BE_API_URL ?? "").replace(/\/+$/, "");
+
+export const ENDPOINTS = {
+  signIn: `${BASE}/user/login`,
+  signUp: `${BASE}/user/register`,
+  logout: `${BASE}/user/logout`,
+  refreshToken: `${BASE}/user/refresh`,
+} as const;

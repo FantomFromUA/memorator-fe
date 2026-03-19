@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ENDPOINTS } from "@/app/data/endpoints.data";
 
 type SignUpPayload = {
   login: string;
@@ -8,11 +9,6 @@ type SignUpPayload = {
 };
 
 const useSignUp = () => {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_MEMORATOR_BE_API_URL ?? "";
-  const SIGN_UP_URL = API_BASE_URL
-    ? `${API_BASE_URL.replace(/\/+$/, "")}/user/register`
-    : "/api/auth/sign-up";
-
   const router = useRouter();
 
   const [login, setLogin] = useState("");
@@ -48,7 +44,7 @@ const useSignUp = () => {
     try {
       setIsSubmitting(true);
 
-      const res = await fetch(SIGN_UP_URL, {
+      const res = await fetch(ENDPOINTS.signUp, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
