@@ -1,20 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ENDPOINTS } from "@/app/data/endpoints.data";
+import { useAuth } from "@/app/context/AuthContext";
 
 const useHeader = () => {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const hasToken = document.cookie
-      .split("; ")
-      .some((row) => row.startsWith("accessToken="));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsLoggedIn(hasToken);
-  }, []);
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   const handleLogout = async () => {
     const refreshTokenCookie = document.cookie

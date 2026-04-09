@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ENDPOINTS } from "@/app/data/endpoints.data";
+import { useAuth } from "@/app/context/AuthContext";
 
 type SignUpPayload = {
   login: string;
@@ -10,6 +11,7 @@ type SignUpPayload = {
 
 const useSignUp = () => {
   const router = useRouter();
+  const { setIsLoggedIn, setUserId } = useAuth();
 
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
@@ -68,10 +70,18 @@ const useSignUp = () => {
         document.cookie = `${key}=${encodeURIComponent(JSON.stringify(value))}; path=/; sameSite=lax`;
       }
 
+      const accessToken = data.accessToken as string | undefined;
+      if (accessToken) {
+        try {
+          const payload = JSON.parse(atob(accessToken.split(".")[1])) as { sub?: string };
+          if (payload.sub) setUserId(Number(payload.sub));
+        } catch { /* ignore */ }
+      }
+
       setSuccess("Account created successfully. Redirecting...");
       setPassword("");
       setConfirmPassword("");
-
+      setIsLoggedIn(true);
       router.push("/home");
     } catch {
       setError("Network error. Please try again.");

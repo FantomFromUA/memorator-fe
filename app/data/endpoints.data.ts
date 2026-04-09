@@ -5,4 +5,6 @@ export const ENDPOINTS = {
   signUp: `${BASE}/user/register`,
   logout: `${BASE}/user/logout`,
   refreshToken: `${BASE}/user/refresh`,
-} as const;
+  wordLists: `${BASE}/word-lists`,
+  wordListsByUser: (userId: number) => `${BASE}/word-lists/user/${userId}`,
+};

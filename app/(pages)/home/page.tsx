@@ -1,5 +1,5 @@
-import Dashboard from "@/app/views/Dashboard";
+import WordLists from "@/app/views/WordLists";
 
 export default function HomePage() {
-  return <Dashboard />;
+  return <WordLists />;
 }
