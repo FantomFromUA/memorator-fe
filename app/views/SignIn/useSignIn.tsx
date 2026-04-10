@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ENDPOINTS } from "@/app/data/endpoints.data";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth, decodeJwtPayload } from "@/app/context/AuthContext";
 
 type SignInPayload = {
   identifier: string;
@@ -34,6 +34,7 @@ const useSignIn = () => {
 
       const res = await fetch(ENDPOINTS.signIn, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -58,11 +59,9 @@ const useSignIn = () => {
 
       const accessToken = data.accessToken as string | undefined;
       if (accessToken) {
-        try {
-          const payload = JSON.parse(atob(accessToken.split(".")[1])) as { sub?: string; login?: string };
-          if (payload.sub) setUserId(Number(payload.sub));
-          if (payload.login) setUserLogin(payload.login);
-        } catch { /* ignore */ }
+        const jwtPayload = decodeJwtPayload(accessToken);
+        if (jwtPayload?.sub) setUserId(Number(jwtPayload.sub));
+        if (jwtPayload?.login) setUserLogin(String(jwtPayload.login));
       }
 
       setSuccess("Signed in successfully. Redirecting...");

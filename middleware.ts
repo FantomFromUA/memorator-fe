@@ -8,7 +8,9 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken")?.value;
 
-  const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+  const isProtected =
+    protectedRoutes.some((route) => pathname.startsWith(route)) ||
+    /^\/[^/]+\/[^/]+/.test(pathname);
   if (isProtected && !accessToken) {
     const signInUrl = request.nextUrl.clone();
     signInUrl.pathname = "/sign-in";
@@ -26,5 +28,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/home/:path*", "/sign-in", "/sign-up"],
+  matcher: ["/home/:path*", "/sign-in", "/sign-up", "/:userLogin/:wordListName"],
 };

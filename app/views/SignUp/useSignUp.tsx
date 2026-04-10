@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ENDPOINTS } from "@/app/data/endpoints.data";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth, decodeJwtPayload } from "@/app/context/AuthContext";
 
 type SignUpPayload = {
   login: string;
@@ -11,7 +11,7 @@ type SignUpPayload = {
 
 const useSignUp = () => {
   const router = useRouter();
-  const { setIsLoggedIn, setUserId } = useAuth();
+  const { setIsLoggedIn, setUserId, setUserLogin } = useAuth();
 
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
@@ -48,6 +48,7 @@ const useSignUp = () => {
 
       const res = await fetch(ENDPOINTS.signUp, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -72,10 +73,9 @@ const useSignUp = () => {
 
       const accessToken = data.accessToken as string | undefined;
       if (accessToken) {
-        try {
-          const payload = JSON.parse(atob(accessToken.split(".")[1])) as { sub?: string };
-          if (payload.sub) setUserId(Number(payload.sub));
-        } catch { /* ignore */ }
+        const jwtPayload = decodeJwtPayload(accessToken);
+        if (jwtPayload?.sub) setUserId(Number(jwtPayload.sub));
+        if (jwtPayload?.login) setUserLogin(String(jwtPayload.login));
       }
 
       setSuccess("Account created successfully. Redirecting...");

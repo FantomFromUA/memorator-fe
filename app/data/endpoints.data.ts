@@ -7,4 +7,7 @@ export const ENDPOINTS = {
   refreshToken: `${BASE}/user/refresh`,
   wordLists: `${BASE}/word-lists`,
   wordListsByUser: (userId: number) => `${BASE}/word-lists/user/${userId}`,
+  wordList: (id: number) => `${BASE}/word-lists/${id}`,
+  wordsByList: (wordListId: number) => `${BASE}/word-lists/${wordListId}/words`,
+  word: (wordListId: number, wordId: number) => `${BASE}/word-lists/${wordListId}/words/${wordId}`,
 };

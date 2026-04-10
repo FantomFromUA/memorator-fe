@@ -1,14 +1,37 @@
 "use client";
 
-import useAddWord from "../useAddWord";
+import { useState } from "react";
 
-const AddWordForm = () => {
-  const { word, setWord, translation, setTranslation, isSubmitting, handleSubmit } = useAddWord();
+type Props = {
+  onSubmit: (word: string, translation: string) => Promise<void>;
+};
+
+const AddWordForm = ({ onSubmit }: Props) => {
+  const [word, setWord] = useState("");
+  const [translation, setTranslation] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!word.trim() || !translation.trim()) return;
+    setError(null);
+    try {
+      setIsSubmitting(true);
+      await onSubmit(word.trim(), translation.trim());
+      setWord("");
+      setTranslation("");
+    } catch {
+      setError("Failed to add word. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section>
       <h2 className="mb-1 text-lg font-semibold text-zinc-900">Add a word</h2>
-      <p className="mb-5 text-sm text-zinc-500">Save a new word to your personal list.</p>
+      <p className="mb-5 text-sm text-zinc-500">Save a new word to this list.</p>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:flex-row sm:items-end"
@@ -47,6 +70,7 @@ const AddWordForm = () => {
           Add word
         </button>
       </form>
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </section>
   );
 };

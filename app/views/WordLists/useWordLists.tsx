@@ -29,7 +29,8 @@ const useWordLists = () => {
       .then((data: WordList[]) => setLists(data))
       .catch(() => setError("Failed to load word lists."))
       .finally(() => setIsLoading(false));
-  }, [userId, fetchWithAuth]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchWithAuth is stable but not memoized with a stable reference across renders
+  }, [userId]);
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,7 +65,16 @@ const useWordLists = () => {
     }
   };
 
-  return { lists, isLoading, newListName, setNewListName, handleCreate, isSubmitting, error };
+  const handleDelete = async (listId: number) => {
+    try {
+      await fetchWithAuth(ENDPOINTS.wordList(listId), { method: "DELETE" });
+      setLists((prev) => prev.filter((l) => l.id !== listId));
+    } catch {
+      setError("Failed to delete list. Please try again.");
+    }
+  };
+
+  return { lists, isLoading, newListName, setNewListName, handleCreate, isSubmitting, error, handleDelete };
 };
 
 export default useWordLists;
