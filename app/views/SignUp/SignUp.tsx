@@ -1,5 +1,4 @@
-// placeholder
-
+import Link from "next/link";
 import useSignUp from "./useSignUp";
 
 const SignUp = () => {
@@ -113,9 +112,9 @@ const SignUp = () => {
 
         <div className="border-t border-zinc-200 px-6 py-4 text-center text-sm text-zinc-600">
           Already have an account?{" "}
-          <a href="/home" className="font-medium text-blue-600 hover:text-blue-700">
+          <Link href="/sign-in" className="font-medium text-blue-600 hover:text-blue-700">
             Sign in
-          </a>
+          </Link>
         </div>
       </div>
     </div>

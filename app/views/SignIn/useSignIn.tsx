@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ENDPOINTS } from "@/app/data/endpoints.data";
+import { useAuth, decodeJwtPayload } from "@/app/context/AuthContext";
 
 type SignInPayload = {
   identifier: string;
@@ -7,13 +9,8 @@ type SignInPayload = {
 };
 
 const useSignIn = () => {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_MEMORATOR_BE_API_URL ?? "";
-
-  const SIGN_IN_URL = API_BASE_URL
-    ? `${API_BASE_URL.replace(/\/+$/, "")}/user/login`
-    : "/api/auth/sign-in";
-
   const router = useRouter();
+  const { setIsLoggedIn, setUserId, setUserLogin } = useAuth();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -35,8 +32,9 @@ const useSignIn = () => {
     try {
       setIsSubmitting(true);
 
-      const res = await fetch(SIGN_IN_URL, {
+      const res = await fetch(ENDPOINTS.signIn, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -59,9 +57,16 @@ const useSignIn = () => {
         document.cookie = `${key}=${encodeURIComponent(JSON.stringify(value))}; path=/; sameSite=lax`;
       }
 
+      const accessToken = data.accessToken as string | undefined;
+      if (accessToken) {
+        const jwtPayload = decodeJwtPayload(accessToken);
+        if (jwtPayload?.sub) setUserId(Number(jwtPayload.sub));
+        if (jwtPayload?.login) setUserLogin(String(jwtPayload.login));
+      }
+
       setSuccess("Signed in successfully. Redirecting...");
       setPassword("");
-
+      setIsLoggedIn(true);
       router.push("/home");
     } catch {
       setError("Network error. Please try again.");
