@@ -7,6 +7,8 @@ type AuthContextType = {
   setIsLoggedIn: (value: boolean) => void;
   userId: number | null;
   setUserId: (id: number | null) => void;
+  userLogin: string | null;
+  setUserLogin: (login: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -14,6 +16,8 @@ const AuthContext = createContext<AuthContextType>({
   setIsLoggedIn: () => {},
   userId: null,
   setUserId: () => {},
+  userLogin: null,
+  setUserLogin: () => {},
 });
 
 export const getCookieValue = (name: string): string | null => {
@@ -37,6 +41,7 @@ export const decodeJwtPayload = (token: string): Record<string, unknown> | null 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
+  const [userLogin, setUserLogin] = useState<string | null>(null);
 
   useEffect(() => {
     const token = getCookieValue("accessToken");
@@ -44,10 +49,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoggedIn(true);
     const payload = decodeJwtPayload(token);
     if (payload?.sub) setUserId(Number(payload.sub));
+    if (payload?.login) setUserLogin(String(payload.login));
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userId, setUserId }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, userId, setUserId, userLogin, setUserLogin }}>
       {children}
     </AuthContext.Provider>
   );

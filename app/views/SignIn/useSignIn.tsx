@@ -10,7 +10,7 @@ type SignInPayload = {
 
 const useSignIn = () => {
   const router = useRouter();
-  const { setIsLoggedIn, setUserId } = useAuth();
+  const { setIsLoggedIn, setUserId, setUserLogin } = useAuth();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -59,8 +59,9 @@ const useSignIn = () => {
       const accessToken = data.accessToken as string | undefined;
       if (accessToken) {
         try {
-          const payload = JSON.parse(atob(accessToken.split(".")[1])) as { sub?: string };
+          const payload = JSON.parse(atob(accessToken.split(".")[1])) as { sub?: string; login?: string };
           if (payload.sub) setUserId(Number(payload.sub));
+          if (payload.login) setUserLogin(payload.login);
         } catch { /* ignore */ }
       }
 

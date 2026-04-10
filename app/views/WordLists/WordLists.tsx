@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
 import useWordLists from "./useWordLists";
 
 const WordLists = () => {
+  const { userLogin } = useAuth();
   const { lists, isLoading, newListName, setNewListName, handleCreate, isSubmitting, error } = useWordLists();
 
   return (
@@ -40,12 +42,12 @@ const WordLists = () => {
           {lists.map((list) => (
             <Link
               key={list.id}
-              href={`/word-list/${list.id}`}
+              href={`/${userLogin}/${encodeURIComponent(list.name)}`}
               className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-blue-400 hover:shadow-md"
             >
               <p className="font-semibold text-zinc-900">{list.name}</p>
               <p className="mt-1 text-xs text-zinc-400">
-                {new Date(list.createdAt).toLocaleDateString()}
+                {list.wordCount} {list.wordCount === 1 ? "word" : "words"} · {new Date(list.createdAt).toLocaleDateString()}
               </p>
             </Link>
           ))}

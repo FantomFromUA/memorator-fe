@@ -9,6 +9,7 @@ export type WordList = {
   id: number;
   name: string;
   createdAt: string;
+  wordCount: number;
 };
 
 const useWordLists = () => {
